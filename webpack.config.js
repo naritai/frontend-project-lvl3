@@ -1,6 +1,12 @@
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  entry: `${__dirname}/src/index.js`,
+  output: {
+    filename: '[hash].main.js',
+    path: path.resolve(__dirname, 'build'),
+  },
   mode: process.env.NODE_ENV || 'development',
   module: {
     rules: [
@@ -14,10 +20,42 @@ module.exports = {
           },
         },
       },
-      { test: /\.css$/, use: ['style-loader', 'css-loader', 'postcss-loader'] },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: () => [
+                  // eslint-disable-next-line global-require
+                  require('autoprefixer'),
+                ],
+              },
+            },
+          },
+        ],
+      },
       {
         test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader', 'postcss-loader'],
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: () => [
+                  // eslint-disable-next-line global-require
+                  require('autoprefixer'),
+                ],
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
